@@ -4,12 +4,9 @@ import soundfile as sf
 fs = 44100
 recorded_data = []
 stop_recording = False
-
 input_stream = sd.InputStream(channels=2, samplerate=fs, dtype='float32')
-
 # Start the input stream
 input_stream.start()
-
 while True:
     ch = int(input("Enter 1 to record, 2 - stop, 3 - play, 4-exit\n"))
 
