@@ -56,9 +56,9 @@ def save_audio(folder_path):
             os.makedirs(folder_path)
 
         filename = input("Enter filename: ")
-        full_path = os.path.join(folder_path, filename + '.mp3')
+        full_path = os.path.join(folder_path, filename + '.wav')  # Save as WAV instead of MP3
         sf.write(full_path, np.concatenate(recorded_data), fs)
-        print(f"Audio file saved as {filename + '.mp3'} at {os.getcwd()+full_path}")
+        print(f"Audio file saved as {filename + '.wav'} at {os.getcwd()+full_path}")
     else:
         print("No data present to save into a file.")
 
