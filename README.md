@@ -25,7 +25,9 @@ the language used in the code was python.
 
 ## Demo
 
-Insert gif or link to demo
+
+![vc ss 1](https://github.com/Boora-Raman/Voice_Recorder/assets/142530032/945910d3-654f-46a6-b515-0358910c87c4)
+
 
 
 ## Language used 
