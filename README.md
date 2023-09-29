@@ -28,6 +28,10 @@ the language used in the code was python.
 
 ![vc ss 1](https://github.com/Boora-Raman/Voice_Recorder/assets/142530032/945910d3-654f-46a6-b515-0358910c87c4)
 
+![vc ss 2](https://github.com/Boora-Raman/Voice_Recorder/assets/142530032/a43e8740-b453-4f46-a12c-6262ba52368f)
+
+![vc ss 3](https://github.com/Boora-Raman/Voice_Recorder/assets/142530032/1de01b70-fcc5-46f8-80f4-6e0770279f22)
+
 
 
 ## Language used 
