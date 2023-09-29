@@ -23,7 +23,7 @@ fs = fs_dict[audio_quality]
 recorded_data = []
 
 class VoiceRecorderApp:
-    def _init_(self, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Voice Recorder App")
         self.stream = sd.InputStream(channels=2, samplerate=fs, callback=self.audio_callback)
