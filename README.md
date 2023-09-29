@@ -35,7 +35,7 @@ the language used in the code was python.
 
 
 ## Language used 
-python  
+Python  
 ## 🔗 Links
 [https://github.com/KhushiiChauhan/Voice_Recorder.git(https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://katherineoelsner.com/)
 
