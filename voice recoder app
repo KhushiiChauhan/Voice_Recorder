@@ -1,0 +1,137 @@
+from tkinter import filedialog, messagebox, simpledialog
+import tkinter as tk
+import sounddevice as sd
+import numpy as np
+import soundfile as sf
+import os
+
+fs_low = 22050
+fs_medium = 44100
+fs_high = 96000
+admin_username = "admin"
+admin_password = "admin123"
+audio_quality = 'medium'
+
+fs_dict = {
+    'low': fs_low,
+    'medium': fs_medium,
+    'high': fs_high
+}
+
+fs = fs_dict[audio_quality]
+
+recorded_data = []
+
+class VoiceRecorderApp:
+    def _init_(self, root):
+        self.root = root
+        self.root.title("Voice Recorder App")
+        self.stream = sd.InputStream(channels=2, samplerate=fs, callback=self.audio_callback)
+        self.admin_mode = False  # Initialize admin_mode attribute
+        self.folder_path = ''
+        self.filename = ''
+        self.status_bar = tk.Label(root, text="Idle", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.start_button = tk.Button(root, text="Start Recording", command=self.start_recording)
+        self.start_button.pack()
+
+        self.stop_button = tk.Button(root, text="Stop Recording", command=self.stop_recording)
+        self.stop_button.pack()
+
+        self.cont_button = tk.Button(root, text="Continue Recording", command=self.continue_recording)
+        self.cont_button.pack()
+
+        self.play_button = tk.Button(root, text="Play Recorded Audio", command=self.play_recorded_audio)
+        self.play_button.pack()
+
+        self.save_button = tk.Button(root, text="Save Recorded Audio", command=self.save_audio)
+        self.save_button.pack()
+
+        self.delete_button = tk.Button(root, text="Delete File", command=self.delete_file)
+        self.delete_button.pack()
+
+        self.set_quality_button = tk.Button(root, text="Set Audio Quality", command=self.set_audio_quality)
+        self.set_quality_button.pack()
+
+        self.admin_login_button = tk.Button(root, text="Login to Admin Mode", command=self.login_to_admin_mode)
+        self.admin_login_button.pack()
+
+    def audio_callback(self, indata, frames, time, status):
+        recorded_data.extend(indata.copy())
+
+    def start_recording(self):
+        global recorded_data
+        recorded_data = []  # Reset recorded data
+        self.stream.start()
+        self.status_bar.config(text="Recording Started")
+
+    def continue_recording(self):
+        global recorded_data
+        # recorded_data = []  # Reset recorded data
+        self.stream.start()
+        self.status_bar.config(text="Recording Continued")
+
+    def stop_recording(self):
+        self.stream.stop()
+        # Do not close the stream, so it can be restarted
+        self.status_bar.config(text="Recording Stopped")
+
+    def play_recorded_audio(self):
+        if recorded_data:
+            sd.play(np.array(recorded_data), fs)
+            sd.wait()
+        else:
+            messagebox.showwarning("Warning", "No data to play.")
+
+    def set_audio_quality(self):
+        global fs, audio_quality
+        if self.admin_mode:
+            new_quality = simpledialog.askstring("Audio Quality", "Enter the desired audio quality (low, medium, high):")
+            if new_quality and new_quality.lower() in ['low', 'medium', 'high']:
+                audio_quality = new_quality.lower()
+                fs = fs_dict[audio_quality]
+                messagebox.showinfo("Success", f"Audio quality set to {audio_quality}.")
+            else:
+                messagebox.showerror("Error", "Invalid quality option.")
+        else:
+            messagebox.showerror("Error", "Admin privileges required to set audio quality.")
+
+    def login_to_admin_mode(self):
+        global admin_username, admin_password
+        username = simpledialog.askstring("Admin Login", "Enter username:")
+        password = simpledialog.askstring("Admin Login", "Enter password:", show='*')
+        if username == admin_username and password == admin_password:
+            self.admin_mode = True
+            messagebox.showinfo("Success", "Admin mode enabled.")
+        else:
+            messagebox.showerror("Error", "Invalid credentials.")
+
+    def save_audio(self):
+        global recorded_data
+        if recorded_data:
+            self.filename = filedialog.asksaveasfilename(defaultextension=".wav", initialdir=self.folder_path,
+                                                        filetypes=[("WAV files", "*.wav")])
+            if self.filename:
+                sf.write(self.filename, np.array(recorded_data), fs)
+                messagebox.showinfo("Success", f"Audio file saved as {os.path.basename(self.filename)} at {os.path.dirname(self.filename)}")
+        else:
+            messagebox.showwarning("Warning", "No data present to save.")
+
+    def delete_file(self):
+        if self.admin_mode:
+            file_to_delete = filedialog.askopenfilename(initialdir=self.folder_path, title="Select file to delete",
+                                                        filetypes=[("All files", "*.*")])
+            if file_to_delete:
+                try:
+                    os.remove(file_to_delete)
+                    messagebox.showinfo("Success", f"File deleted successfully at {os.path.dirname(file_to_delete)}")
+                except FileNotFoundError:
+                    messagebox.showerror("Error", "File not found.")
+        else:
+            messagebox.showwarning("Warning", "Admin Privaleges Required To Delete Files")            
+
+
+root = tk.Tk()
+app = VoiceRecorderApp(root)
+root.mainloop()
